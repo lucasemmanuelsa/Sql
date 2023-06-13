@@ -1,0 +1,1 @@
+> É uma tabela fictícia ou temporária que é usada em consultas de banco de dados para realizar operações ou gerar resultados sem a necessidade de acessar dados reais de uma tabela existente
