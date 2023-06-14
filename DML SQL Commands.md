@@ -1,10 +1,10 @@
 >Esquemas do BD Empresa
 
-**Empregado**(*matricula*, nome, sexo, endereco, salario, supervisor, depto)
-**Dependente**(*matricula*, nome, sexo)
-**Departamento**(*coddep*, nome, gerente, dataini)
-**Projeto**(*codproj*, nome, local, depart)
-**Alocacao**(*matric,codproj*, horas)
+- **Empregado**(*matricula*, nome, sexo, endereco, salario, supervisor, depto)
+- **Dependente**(*matricula*, nome, sexo)
+- **Departamento**(*coddep*, nome, gerente, dataini)
+- **Projeto**(*codproj*, nome, local, depart)
+- **Alocacao**(*matric,codproj*, horas)
 
 - Operações de manipulação sem cursor:
 	- SELECT

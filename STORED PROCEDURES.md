@@ -323,3 +323,11 @@ BEGIN
 	END IF;
 END;
 ```
+
+#### CURSORES
+
+- Ponteiro para uma única tupla do resultado da consulta (result set)
+
+- Cada cursor possui uma consulta associada, especificada como parte da operação que define o cursor
+
+- 
