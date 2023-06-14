@@ -1,0 +1,162 @@
+{
+  "main": {
+    "id": "7ede08ee8dbd18c8",
+    "type": "split",
+    "children": [
+      {
+        "id": "9746b9fc3d2962e4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3ff12fb2348d5fd3",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "STORED PROCEDURES.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f1d9ed90b33c9ce1",
+    "type": "split",
+    "children": [
+      {
+        "id": "53d2fb79d44bfa18",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0540ee645e240fd6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "0f4987271d9b7e6d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "ac326d6441b184c9",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "6fbd3f012bc41f10",
+    "type": "split",
+    "children": [
+      {
+        "id": "c93909dc1ea9b292",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0a328b2772777174",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "STORED PROCEDURES.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "725957b9cb085551",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "STORED PROCEDURES.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "01fe5de6a3781016",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "a409a9381416939d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "STORED PROCEDURES.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "3ff12fb2348d5fd3",
+  "lastOpenFiles": [
+    "Visões.md",
+    "STORED PROCEDURES.md",
+    "STORED PROCEDURES PL/SQL.md",
+    "STORED PROCEDURES PL",
+    "PROJETO GRUPO 9 CONSULTAS P2.md",
+    "DML SQL Commands.md",
+    "Foreign Key.md",
+    "PROJETO GRUPO 9 CONSULTAS P1.md",
+    "PROJETO GRUPO 9 CONSULTAS.md",
+    "DDL SQL Commands.md"
+  ]
+}

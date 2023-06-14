@@ -273,3 +273,4 @@ WHERE valor is not NULL
 
 > `COUNT(COLUNA)` conta as tuplas cujo valor para a coluna não seja `NULL`
 
+[[STORED PROCEDURES]]
