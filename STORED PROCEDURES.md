@@ -99,6 +99,7 @@ END; (obrigatório)
 >**DECLARE**
 
 #Ex 
+
 ```
 -- um comentário de uma linha
 /* um comentário de 
@@ -330,4 +331,637 @@ END;
 
 - Cada cursor possui uma consulta associada, especificada como parte da operação que define o cursor
 
-- 
+- A consulta é executada quando o cursor for aberto
+
+- Em uma mesma transação, um cursor pode ser aberto ou fechado qualquer número de vezes
+
+- Pode-se ter vários cursores abertos ao mesmo tempo
+
+> Declaração
+
+```
+CURSOR <nome> IS
+	comando select-from-where
+```
+
+- O cursor aponta para cada tupla por vez da **relação-resultado** da consulta `select-from-where`, usando um *fetch statement* dentro de um laço
+
+	- *Fetch statement*
+		```
+		FETCH <nome_cursor> INTO
+			lista_variáveis;
+		```
+
+- Um laço é interrompido por
+
+```
+EXIT WHEN <nome_cursor>%NOTFOUND;
+/*O valor é TRUE se não houver mais tupla a apontar*/
+```
+
+- `OPEN` e `CLOSE` abrem e fecham um cursor
+
+> Um cursor possui as seguintes operações
+
+- **OPEN**
+	- Executa a consulta especificada e põe o cursor para apontar para uma posição anterior à primeira tupla do resultado da consulta
+- **FETCH**
+	- Move o cursor para apontar para a próxima linha no resultado da consulta, tornando-a a tupla corrente e copiando todos os valores dos atributos para as variáveis da linguagem hospedeira usada
+- **CLOSE**
+	- Fecha o cursor
+
+
+<div style="display: flex;">
+    <div style="border: 2px solid black; padding: 10px; width: fit-content;">
+        <p style="text-align: center;">DECLARE</p>
+    </div>
+	
+	<div style="display: flex; align-items: center;">
+        <span style="font-size: 20px;">➔</span>
+    </div>
+
+    <div style="border: 2px solid black; padding: 10px; width: fit-content;">
+        <p style="text-align: center;">OPEN</p>
+    </div>
+    
+	<div style="display: flex; align-items: center;">
+        <span style="font-size: 20px;">➔</span>
+    </div>
+    
+    <div style="border: 2px solid black; padding: 10px; width: fit-content;">
+        <p style="text-align: center;">FETCH</p>
+    </div>
+	 <div style="display: flex; align-items: center;">
+        <span style="font-size: 20px;">➔</span>
+    </div>
+    <div style="border: 2px solid black; padding: 10px; width: fit-content;">
+        <p style="text-align: center;">Vazio?</p>
+    </div>
+    <div style="display: flex; align-items: center;">
+        <span style="font-size: 20px;">➔</span>
+    </div>
+    <div style="border: 2px solid black; padding: 10px; width: fit-content;">
+        <p style="text-align: center;">CLOSE</p>
+    </div>
+</div>
+
+- DECLARE
+	- Cria um cursor
+- OPEN
+	- Abre o cursor
+- FETCH
+	- Carrega a linha atual em variáveis
+- VAZIO?
+	- Se não estiver vazio volta e o Fetch aponta para a próxima linha
+	- Se estiver vazio, CLOSE
+- CLOSE : Libera o cursor
+
+#Ex 
+
+```
+DECLARE
+    CURSOR c IS
+    SELECT nome, pontos 
+    FROM cliente;
+    v_nome cliente.nome%TYPE;
+    v_pontos cliente.pontos%TYPE;
+BEGIN
+	OPEN c;
+	FETCH c INTO v_nome, v_pontos;
+    DBMS_OUTPUT.PUT_LINE('Nome : '||v_nome);
+    DBMS_OUTPUT.PUT_LINE('Pontos :'||v_pontos);
+    CLOSE c;
+END;
+
+```
+
+- Com `LOOP`
+
+```
+DECLARE
+    numPon INT := 5;
+    CURSOR c IS
+    SELECT nome, pontos 
+    FROM cliente
+    WHERE pontos > numPon;
+    v_nome cliente.nome%TYPE;
+    v_pontos cliente.pontos%TYPE;
+BEGIN
+	OPEN c;
+    LOOP
+        FETCH c INTO v_nome, v_pontos;
+        EXIT WHEN c%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Nome : '||v_nome);
+        DBMS_OUTPUT.PUT_LINE('Pontos : '||v_pontos);
+    END LOOP;
+    CLOSE c;
+END;
+```
+
+- Por `Default` os cursores movem-se do inicio do `result set` para frente (forward)
+- Podemos também movê-lo para trás e/ou para qualquer posição no `result set`
+- Devemos acrescentar `SCROLL` na definição do cursor
+
+#Ex 
+
+```
+EXEC DECLARE
+MeuCursor SCROLL CURSOR FOR Cliente;
+```
+
+> Pode ser adicionado no FETCH
+
+- **NEXT ou PRIOR** : pega o próximo ou o anterior
+- **FIRST ou LAST** : obtém o primeiro ou o ultimo
+- **RELATIVE** Seguido de um inteiro: indica quantas tuplas mover para frente (se posivtivo) ou quantas tuplas mover para trás (se negativo).
+- **ABSOLUTE** seguido de um inteiro : indica a posição da tupla contando do início (se positivo) ou do final(se negativo)
+
+#Ex 
+
+```
+DECLARE
+	pi CONSTANT NUMBER(8,7) := 3.1415926;
+	area NUMBER(14,2);
+	CURSOR rad_cursor IS SELECT * FROM rad_vals;
+	rad_value rad_cursor%ROWTYPE;
+BEGIN
+	OPEN rad_cursor;
+	LOOP
+		FETCH rad_cursor INTO rad_value;
+		EXIT WHEN rad_cursor%NOTFOUND;
+		area := pi * power(rad_value.radius, 2);
+		INSERT INTO areas VALUES(rad_value.radius, area);
+	END LOOP;
+	CLOSE rad_cursor
+	COMMIT;
+END;
+```
+
+- **Procedimento** que calcula a duração média dos filmes de um estúdio
+
+```
+DECLARE
+	CURSOR filmeCursor IS 
+	SELECT duracao 
+	FROM Filme
+	WHERE nomeStudio = 'Disney';
+	novaDuracao INTEGER;
+	contaFilmes INTEGER;
+	mean REAL;
+BEGIN
+	mean := 0.0;
+	contaFilmes := 0;
+	OPEN filmeCursor;
+	LOOP
+		FETCH filmeCursor INTO novaDuracao;
+		EXIT WHEN filmeCursor%NOTFOUND;
+		contaFilmes := contaFilmes + 1;
+		mean := mean + novaDuracao;
+	END LOOP;
+	mean := mean / contaFilmes;
+	CLOSE filmeCursor;
+END;
+```
+
+> Atributos explícitos de cursores
+
+- Obtém informações de status sobre um cursor
+
+| Atributo | Tipo | Descrição |
+|---------------|---------|-----------------|
+| %**ISOPEN** | Boolean | Retorna TRUE se o cursor estiver aberto |
+| %**NOTFOUND** | Boolean | Retorna TRUE se o fetch mais recente não retorna uma tupla |
+| %**FOUND** | Boolean | Retorna TRUE se o fetch mais recente retorna uma tupla (complemento de %NOTFOUND)|
+| %**ROWCOUNT** | Number | Retorna o total de tuplas acessadas **até o momento** |
+
+
+#Ex 
+
+- Usando o %ROWCOUNT
+
+```
+DECLARE
+    numPon INT := 5;
+    CURSOR c IS
+    SELECT nome, pontos 
+    FROM cliente
+    WHERE pontos > numPon;
+    v_nome cliente.nome%TYPE;
+    v_pontos cliente.pontos%TYPE;
+BEGIN
+	OPEN c;
+    LOOP
+        FETCH c INTO v_nome, v_pontos;
+        EXIT WHEN c%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Nome : '||v_nome);
+        DBMS_OUTPUT.PUT_LINE('Pontos : '||v_pontos);
+        DBMS_OUTPUT.PUT_LINE('Tupla numero '|| c%ROWCOUNT);
+    END LOOP;
+    CLOSE c;
+END;
+```
+
+#### **ITERAÇÕES**
+
+- Laços **FOR**
+
+```
+FOR <counter> in <lower_bound>..<higher_bound>
+LOOP
+	...<<set of statements>>...
+END LOOP;
+```
+
+#Ex 
+
+```
+BEGIN
+	FOR i IN 1..10
+	LOOP
+		DBMS_OUTPUT.PUT_LINE('i ='||i);
+	END LOOP;
+END;
+```
+
+#Ex 
+
+```
+DECLARE
+	contaFilmes INTEGER;
+	mean REAL;
+BEGIN
+	mean := 0.0;
+	contaFilmes := 0;
+	FOR filme IN (SELECT duracao FROM Filme WHERE nomeStudio = 'Disney');
+	LOOP
+		contaFilmes := contaFilmes + 1;
+		mean := mean + duracao;
+	END LOOP;
+	mean := mean / contaFilmes;
+END;
+```
+
+- OBS : veja que não precisa de OPEN, FETCH e CLOSE do cursor
+
+> Cursor implícito com **FOR**
+
+```
+CREATE OR REPLACE PROCEDURE imprime_grandes_salarios
+IS
+BEGIN
+	FOR emp_rec IN (SELECT last_name, salary FROM employees WHERE salary >=10000)
+	LOOP
+	DBMS_OUTPUT.PUT_LINE(emp_rec.last_name||'ganha'||emp_rec.salary||'Dólares por mês');
+	END LOOP;
+END;
+
+```
+
+```
+CREATE OR REPLACE PROCEDURE imprime_cliente_pontos IS
+BEGIN
+	FOR cli IN (SELECT nome, pontos FROM cliente WHERE pontos >= 5) 
+    LOOP
+        DBMS_OUTPUT.PUT_LINE(cli.nome||' possui '||cli.pontos||'Pontos');
+    END LOOP;
+END;
+```
+
+- Para chamar a procedure que acabamos de criar
+
+```
+BEGIN
+    imprime_cliente_pontos;
+END;
+```
+
+> Outros tipos de laços em PSM
+
+- Laço **WHILE**
+
+```
+WHILE <condicao> DO
+	<comandos>
+END WHILE;
+```
+
+- **REPEAT**
+
+```
+REPEAT
+	<comandos>
+UNTIL <condição>
+END REPEAT;
+```
+
+#Ex 
+
+```
+DECLARE
+	TEN number:=10;
+	i number_table.num%TYPE:=1;
+BEGIN
+	WHILE i <= TEN LOOP
+		INSERT INTO number_table VALUES (i);
+		i := i+1;
+	END LOOP;
+END;
+```
+
+#### **Funções**
+
+- Podemos definir uma função da seguinte forma
+
+```
+CREATE FUNCTION <name> (<param_list>)
+RETURN <return_type>
+IS ...
+```
+
+- No corpo da função, `RETURN <expression>;` sai (retorna) da função e retorna o valor de `<expression>`
+
+
+#Ex 
+
+```
+CREATE FUNCTION P_Filmes(p_ano int, studio char[15])
+RETURNS BOOLEAN
+IS
+BEGIN
+	IF EXISTS (SELECT * FROM Filme WHERE ano = p_ano AND nomeStudio = studio) THEN RETURN TRUE;
+	ELSE RETURN FALSE;
+	END IF;
+END;
+```
+
+- O exists da erro assim, pois deve ser usado dentro de consultas apenas
+
+
+```
+CREATE FUNCTION p_cliente_alternative(cod CHAR) RETURN BOOLEAN IS
+    v_count INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO v_count FROM cliente WHERE cod = end_num;
+    
+    IF v_count > 0 THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END;
+```
+
+```
+CREATE FUNCTION get_descricao_produto (p_ID IN produto.codprod%TYPE)
+RETURN produto.descricao%TYPE
+IS
+	v_descricao Produto.descricao%TYPE;
+BEGIN
+	SELECT descricao INTO v_descricao FROM produto WHERE codprod = p_ID;
+	RETURN v_descricao;
+END;
+```
+
+- Invocando a função acima a partir de um select
+
+```
+SELECT CODPROD, get_descricao_produto(codprod) FROM produto WHERE codprod = 1;
+```
+
+```
+DECLARE
+	v_desc produto.descricao%TYPE;
+	v_id produto.codprod%TYPE := 2;
+BEGIN
+	v_desc := get_descricao_produto(v_id);
+	DBMS_OUTPUT.PUT_LINE('A descrição do produto é' || v_desc);
+END;
+```
+
+> Para dropar uma function
+
+```
+DROP FUNCTION get_descricao_produto;
+```
+
+#### Tratamento de erros
+
+- É possível testar o SQLSTATE para verificar a ocorrência de erros e tomar uma decisão, quando erros ocorram
+- Isto é feito através do EXCEPTION HANDLER que é associado a blocos BEGIN END (o handler aparece dentro do bloco)
+- Os componentes do handler são
+	- Lista de exceções a serem tratadas
+	- Código a ser executado quando exceção ocorrer
+	- Indicação para onde ir depois que o handler concluir
+
+#Sintaxe 
+
+```
+DECLARE <onde ir> HANDLER FOR <condições>
+	<comando>
+```
+
+- As escolhas de `<onde ir>` são 
+
+`CONTINUE`
+`EXIT` - Sai do bloco BEGIN .. END
+`UNDO`
+
+#Ex 
+
+```
+CREATE FUNCTION getSalario (mat integer)
+RETURN FLOAT
+DECLARE NotFound CONDITION FOR SQLSTATE '02000';
+DECLARE TooMany CONDITION FOR SQLSTATE '21000'
+BEGIN
+	DECLARE EXIT HANDLER FOR NotFOund, TooMany
+		RETURN NULL;
+	RETURN (SELECT salario FROM Empregado WHERE matricula = mat);
+END;
+```
+
+```
+CREATE FUNCTION getSalario (mat integer)
+RETURN FLOAT
+DECLARE NotFound CONDITION FOR SQLSTATE '02000';
+DECLARE TooMany CONDITION FOR SQLSTATE '21000'
+BEGIN
+	DECLARE EXIT HANDLER FOR NotFOund, TooMany
+		RETURN NULL;
+	RETURN (SELECT salario FROM Empregado WHERE matricula = mat);
+END;
+```
+
+- TooMany -> muitas linhas retornadas pelo SELECT
+- NotFound -> nenhuma linha retornada pelo SELECT
+
+#Sintaxe 
+
+```
+EXCEPTION
+WHEN nomeExcecao1 THEN
+	comandos;
+WHEN nomeExcecao2 THEN
+	comandos;
+WHEN others THEN
+	comandos;
+```
+
+#Ex 
+
+```
+CREATE TABLE Pais (id NUMBER PRIMARY KEY, Nome VARCHAR2(20));
+
+BEGIN
+	INSERT INTO pais VALUES (100, 'Brasil');
+	COMMIT;
+	DBMS_OUTPUT.PUT_LINE('Inserção realizada com sucesso');
+	EXCEPTION
+		WHEN dup_val_on_index THEN
+			DBMS_OUTPUT.PUT_LINE('País já cadastrado!');
+		WHEN others THEN
+			DBMS_OUTPUT.PUT_LINE('Erro ao cadastrar país');
+END;
+```
+
+```
+DROP TABLE PAIS
+```
+
+>Visualizando erros na criação de uma procedure/function
+
+- Quando se cria uma procedure, se houver erros na sua definiçao, estes não serão mostrados
+
+- Para ver os erros de procedure chamada myProcedure
+
+```
+SHOW ERRORS PROCEDURE myProcedure /*no ISQLPLUS prompt*/
+```
+
+- Para funções
+
+```
+SHOW ERRORS FUNCTION myFunction
+```
+
+#### STORED PROCEDURES
+
+- São objetos armazenados no BD que usam comandos PL/SQL e SQL em seus corpos
+
+`Sintaxe`
+
+```
+CREATE OR REPLACE PROCEDURE <nome> (<lista_argumentos>)
+IS
+	<declarações>
+BEGIN
+	<comandos PL/SQL e SQL>
+END;
+```
+
+- `<Lista_argumentos>` tem triplas nome-modo-tipo.
+	- Modo : IN, OUT ou  IN OUT para read-only, write-only, read/write, respectivamente
+		- OBS : Se omitido o Modo, por default é IN (parâmetro de entrada read-only)
+	- Tipos de Dados
+		- Padrão SQL + tipos genéricos como NUMBER = qualquer tipo inteiro ou real
+	- Como tipos nas procedures devem casar com tipos no esquema do bd, pode-se usar uma expressão da forma `tabela.campo%TYPE` para capturar o tipo corretamente
+
+#Ex 
+
+- Uma procedure que inclui uma nova cerveja e seu preço no menu do bar AlviRubro
+- **Vende**(*bar, cerveja*, preco)
+
+```
+CREATE OR REPLACE PROCEDURE menuAlvi(p_cerva vende.cerveja%TYPE, p_preco vende.preco%TYPE)
+IS
+BEGIN
+	INSERT INTO vende VALUES('AlviRubro', p_cerva, p_preco);
+	COMMIT;
+END;
+```
+
+- Pode ser testado no schema Empregado
+
+```
+CREATE OR REPLACE PROCEDURE p1 (p_empid IN NUMBER, p_sal OUT NUMBER)
+IS
+BEGIN
+	SELECT salario
+	INTO p_sal
+	FROM empregado
+	WHERE empregado.matricula = p_empid;
+END;
+```
+
+```
+CREATE OR REPLACE PROCEDURE p2
+IS
+	v_sal NUMBER;
+	v_empid NUMBER :=101;
+BEGIN
+	p1(v_empid, v_sal);
+	DBMS_OUTPUT.PUT_LINE('O empregado '||TO_CHAR(v_empid)||'recebe'||TO_CHAR(v_sal));
+END;
+```
+
+```
+BEGIN
+    p2;
+END;
+```
+
+- Procedure para incluir um segmento de mercado na tabela SEGMERCADO (ID, DESCRICAO)
+
+```
+CREATE OR REPLACE PROCEDURE incluir_segmercado (
+	p_ID IN segmercado.ID%TYPE,
+	p_DESCRICAO IN segmercado.descricao%TYPE
+)
+IS
+BEGIN
+	INSERT INTO SEGMERCADO VALUES (p_ID, UPPER(p_DESCRICAO));
+	COMMIT;
+END;
+```
+
+> Para remover uma Stored Procedure/Function
+
+```
+DROP PROCEDURE nome;
+DROP FUNCTION nome;
+```
+
+> Como executar funções e Procedures
+
+- **FUNCTION**
+
+```
+DECLARE
+	texto VARCHAR2(1000);
+BEGIN
+	texto := func01(2);
+	DBMS_OUTPUT.PUT_LINE(texto);
+END;
+```
+
+- **PROCEDURE**
+
+```
+BEGIN
+	menuAlvi('Bud', 2.50);
+	menuAlvi('Carlsberg', 5.00);
+END;
+```
+
+```
+/*Fora de um bloco BEGIN...END; */
+
+EXECUTE menuAlvi('Bud', 2.50);
+```
+
+> Exercício
+
+**Empregado**(*id*, nome, salario, comissao, sal_total)
+
+- Criar uma função (calc_sal_total) que calcule o salário total de um empregado (salário fixo + comissão). A função deve receber dois valores numéricos e devolver um valor numérico
+- Criar uma procedure (update_sal) que atualize o salário total de todos os empregados usando a função calc_sal_total. Um cursor deve ser usado dentro da procedure
