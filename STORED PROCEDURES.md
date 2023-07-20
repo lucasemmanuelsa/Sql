@@ -685,7 +685,7 @@ IS ...
 
 ```
 CREATE FUNCTION P_Filmes(p_ano int, studio char[15])
-RETURNS BOOLEAN
+RETURN BOOLEAN
 IS
 BEGIN
 	IF EXISTS (SELECT * FROM Filme WHERE ano = p_ano AND nomeStudio = studio) THEN RETURN TRUE;

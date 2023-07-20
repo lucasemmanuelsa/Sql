@@ -4,16 +4,16 @@
     "type": "split",
     "children": [
       {
-        "id": "9746b9fc3d2962e4",
+        "id": "885963448ef6ecf9",
         "type": "tabs",
         "children": [
           {
-            "id": "3ff12fb2348d5fd3",
+            "id": "608770092454c793",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "STORED PROCEDURES.md",
+                "file": "PROJETO GRUPO 9 CONSULTAS P2.md",
                 "mode": "source",
                 "source": false
               }
@@ -48,7 +48,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#Ex",
+                "query": "",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -65,8 +65,7 @@
               "state": {}
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "STORED PROCEDURES.md",
+                "file": "PROJETO GRUPO 9 CONSULTAS P2.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "STORED PROCEDURES.md",
+                "file": "PROJETO GRUPO 9 CONSULTAS P2.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "STORED PROCEDURES.md"
+                "file": "PROJETO GRUPO 9 CONSULTAS P2.md"
               }
             }
           }
@@ -147,17 +146,18 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "3ff12fb2348d5fd3",
+  "active": "0540ee645e240fd6",
   "lastOpenFiles": [
-    "DML SQL Commands.md",
     "STORED PROCEDURES.md",
-    "Visões.md",
-    "STORED PROCEDURES PL/SQL.md",
-    "STORED PROCEDURES PL",
     "PROJETO GRUPO 9 CONSULTAS P2.md",
-    "Foreign Key.md",
     "PROJETO GRUPO 9 CONSULTAS P1.md",
     "PROJETO GRUPO 9 CONSULTAS.md",
+    "Visões.md",
+    "Questoes.md",
+    "DML SQL Commands.md",
+    "STORED PROCEDURES PL/SQL.md",
+    "STORED PROCEDURES PL",
+    "Foreign Key.md",
     "DDL SQL Commands.md"
   ]
 }
